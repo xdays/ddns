@@ -4,7 +4,10 @@
 import httplib, urllib
 import socket
 import time
+import fcntl
+import struct
  
+type = 'public' #type of ip address, public or private
 params = dict(
     login_email="email", # replace with your email
     login_password="pass", # replace with your password
@@ -32,15 +35,33 @@ def ddns(ip):
     conn.close()
     return response.status == 200
  
-def getip():
+def get_public_ip():
     sock = socket.create_connection(('ns1.dnspod.net', 6666))
     ip = sock.recv(16)
     sock.close()
     return ip
+
+def get_local_ip():
+    '''get ip address from default route interface'''
+    f = open('/proc/net/route')
+    for i in f:
+        s = i.split('\t')
+        if s[1] == '00000000':
+            iface = s[0]
+            break
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) 
+    return socket.inet_ntoa(fcntl.ioctl( 
+        s.fileno(), 
+        0x8915,  # SIOCGIFADDR 
+        struct.pack('256s', iface[:15]) 
+    )[20:24])
  
 if __name__ == '__main__':
     try:
-        ip = getip()
+        if type == 'public':
+            ip = get_public_ip()
+        else:
+            ip = get_local_ip()
         print ip
         if current_ip != ip:
             if ddns(ip):
