@@ -1,1 +1,1 @@
-*/1 * * * * cd /web/ddns/ && python ddns.py >> ddns.log 2>&1
+*/1 * * * * cd /opt/ddns/ && python ddns.py >> /tmp/ddns.log 2>&1
