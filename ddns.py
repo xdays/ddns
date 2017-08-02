@@ -39,7 +39,7 @@ def cf_dns(token_id, token_key, domain, record, ip):
     domains = requests.get(api_url + 'zones', params=params, headers=headers).json()
     domain_id = domains['result'][0]['id']
 
-    params = {'type': 'A', 'name': 'g.xdays.me'}
+    params = {'type': 'A', 'name': record}
     records = requests.get(api_url + 'zones/%s/dns_records' % domain_id,
         params=params, headers=headers).json()
     record_id = records['result'][0]['id']
