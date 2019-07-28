@@ -1,17 +1,17 @@
-#简介
+# 简介
 
 动态DNS更新脚本，目前支持DnsPod和CloudFlare
 
 * [DNSPod API](https://www.dnspod.cn/docs/records.html#dns)
 * [CloudFlare API](https://api.cloudflare.com/)
 
-#功能模块
+# 功能模块
 
 * 获取本机的公网地址
 * 更新DNS记录
 * crontab运行，如公网地址没变则不发起更新请求
 
-#配置介绍
+# 配置介绍
 
 通过环境变量配置脚本:
 
