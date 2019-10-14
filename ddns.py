@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
  
-from urllib import urlencode
+from urllib.parse import urlencode
 import requests
 import socket
 import time
@@ -33,8 +33,7 @@ def cf_dns(token_id, token_key, domain, record, ip):
     api_url = 'https://api.cloudflare.com/client/v4/'
     params = {'name': domain,
         'status': 'active'}
-    headers = {'X-Auth-Email': token_id,
-        'X-Auth-Key': token_key,
+    headers = {'Authorization': 'Bearer %s' % token_key,
         'Content-Type': 'application/json'}
     domains = requests.get(api_url + 'zones', params=params, headers=headers).json()
     domain_id = domains['result'][0]['id']
@@ -50,7 +49,7 @@ def cf_dns(token_id, token_key, domain, record, ip):
     return result.status_code == 200
  
 def get_public_ip():
-    ip = requests.get('http://ipip.tk/ip').text.strip('\n')
+    ip = requests.get('https://z.xdays.me/cip').text.strip('\n')
     return ip
 
 def get_local_ip():
@@ -78,7 +77,7 @@ if __name__ == '__main__':
         if env in os.environ:
             exec('%s="%s"' % (env, get_env(env, None)))
         else:
-            print '%s is required' % env
+            print('%s is required' % env)
             sys.exit(1)
     if  os.path.exists(current_file):
         with open(current_file, 'r') as f:
@@ -86,27 +85,23 @@ if __name__ == '__main__':
     else:
         current_ip = None
  
-    try:
-        if IP_TYPE == 'public':
-            ip = get_public_ip()
+    if IP_TYPE == 'public':
+        ip = get_public_ip()
+    else:
+        ip = get_local_ip()
+    if current_ip != ip:
+        if PROVIDER == 'dnspod':
+            result = dp_dns(TOKEN_ID, TOKEN_KEY, DOMAIN, RECORD, ip)
+        elif PROVIDER == 'cloudflare':
+            result = cf_dns(TOKEN_ID, TOKEN_KEY, DOMAIN, RECORD, ip)
         else:
-            ip = get_local_ip()
-        if current_ip != ip:
-            if PROVIDER == 'dnspod':
-                result = dp_dns(TOKEN_ID, TOKEN_KEY, DOMAIN, RECORD, ip)
-            elif PROVIDER == 'cloudflare':
-                result = cf_dns(TOKEN_ID, TOKEN_KEY, DOMAIN, RECORD, ip)
-            else:
-                result = None
-                print 'provider not support'
-            if result:
-                print 'update %s dns record successfully' % PROVIDER
-            else:
-                print 'failed to update %s dns record' % PROVIDER
-            with open(current_file, 'w+') as f:
-                f.write(ip)
+            result = None
+            print('provider not support')
+        if result:
+            print('update %s dns record successfully' % PROVIDER)
         else:
-            print 'no change with ip'
-    except Exception, e:
-        print e
-        pass
+            print('failed to update %s dns record' % PROVIDER)
+        with open(current_file, 'w+') as f:
+            f.write(ip)
+    else:
+        print('no change with ip')
