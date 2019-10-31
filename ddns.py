@@ -8,6 +8,7 @@ import time
 import fcntl
 import struct
 import os
+import sys
  
 def dp_dns(token_id, token_key, domain, record, ip):
     api_url = 'https://dnsapi.cn/'

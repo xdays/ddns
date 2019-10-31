@@ -1,0 +1,21 @@
+[Unit]
+Description=DDNS Service
+After=network.target
+Wants=network.target
+
+[Service]
+# This service runs as normal user. You may consider to run it as another user for security concerns.
+# By uncommenting the following two lines, this service will run as user ddns/ddns.
+# More discussion at https://github.com/ddns/ddns-core/issues/1011
+User=nobody
+# Group=nobody
+Type=simple
+EnvironmentFile=/opt/ddns/.env
+PassEnvironment=PROVIDER TOKEN_ID TOKEN_KEY DOMAIN RECORD IP_TYPE
+ExecStart=/opt/ddns/ddns.py
+Restart=on-failure
+# Don't restart in the case of configuration error
+# RestartPreventExitStatus=23
+
+[Install]
+WantedBy=multi-user.target

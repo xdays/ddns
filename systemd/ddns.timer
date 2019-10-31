@@ -1,0 +1,8 @@
+[Unit]
+Description=Runs ddns every minute
+
+[Timer]
+OnUnitActiveSec=1m
+
+[Install]
+WantedBy=multi-user.target

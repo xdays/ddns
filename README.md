@@ -9,7 +9,7 @@
 
 * 获取本机的公网地址
 * 更新DNS记录
-* crontab运行，如公网地址没变则不发起更新请求
+* 依靠systemd的timer运行，如公网地址没变则不发起更新请求
 
 # 配置介绍
 
@@ -22,6 +22,26 @@
 * `RECORD`: 记录，比如www.xdays.me
 * `IP_TYPE`: 使用公网地址还是私网地址, 对应为`public`和`private`
 
-# 示例
+# 安装
 
-    PROVIDER=cloudflare TOKEN_ID='whoami' TOKEN_KEY='changeme' DOMAIN=xdays.me RECORD=p.xdays.me IP_TYPE=public ./ddns.py
+```
+git clone git@github.com:xdays/ddns.git /opt/ddns
+```
+
+准备配置文件 `/opt/ddns/.env`
+
+```
+PROVIDER=cloudflare
+TOKEN_ID=token_id
+TOKEN_KEY=token_key
+DOMAIN=example.com
+RECORD=v.example.com
+IP_TYPE=public
+```
+
+集成systemd
+
+```
+./install.sh
+systemctl start ddns.timer
+```
