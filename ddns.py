@@ -50,7 +50,7 @@ def cf_dns(token_id, token_key, domain, record, ip):
     return result.status_code == 200
  
 def get_public_ip():
-    ip = requests.get('https://z.xdays.me/cip').text.strip('\n')
+    ip = requests.get('https://ip.xdays.me/').json()['ip']
     return ip
 
 def get_local_ip():
