@@ -5,4 +5,4 @@ Description=Runs ddns every minute
 OnUnitActiveSec=1m
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=timers.target

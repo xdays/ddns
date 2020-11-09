@@ -42,6 +42,6 @@ IP_TYPE=public
 集成systemd
 
 ```
+cd systemd
 ./install.sh
-systemctl start ddns.timer
 ```
