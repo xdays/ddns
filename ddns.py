@@ -56,7 +56,7 @@ def cf_dns(token_id, token_key, domain, record, ip):
 
 
 def get_public_ip():
-    ip = requests.get("https://z.xdays.me/cip").text.strip("\n")
+    ip = requests.get("https://ip.xdays.me/me").text.strip("\n")
     return ip
 
 
